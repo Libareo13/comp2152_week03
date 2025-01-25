@@ -1,66 +1,81 @@
-# Import the random library to use for the dice rolls
+# Import the random library to use for the dice later
 import random
 
-# Define variables
+# Define Variables
+numLives = 10           # number of player's lives remaining
+mNumLives = 12          # number of monster's lives remaining
+
 diceOptions = [1, 2, 3, 4, 5, 6]
-weapons = ["Fist", "Knife", "Club", "Gun", "Bomb", "Nuclear bomb"]
+combatStrength = int(input("Enter your combat Strength: "))
+mCombatStrength = int(input("Enter the monster's combat Strength: "))
+weapons = ["Fist", "Knife", "Club", "Gun", "Bomb", "Nuclear bomb"];
 
-# Question: Add error handling for combatStrength input, ensuring it is an integer between 1 and 6.
-combatStrength = input("Enter your combat Strength (1-6): ")
-while not combatStrength.isdigit() or not (1 <= int(combatStrength) <= 6):
-    combatStrength = input("Invalid input. Enter your combat Strength (1-6): ")
-combatStrength = int(combatStrength)
-
-# Question: Add error handling for the monster's combat strength input, ensuring it is an integer between 1 and 6.
-mCombatStrength = input("Enter the monster's combat Strength (1-6): ")
-while not mCombatStrength.isdigit() or not (1 <= int(mCombatStrength) <= 6):
-    mCombatStrength = input("Invalid input. Enter the monster's combat Strength (1-6): ")
-mCombatStrength = int(mCombatStrength)
-
-# Question: Roll the dice (1-6) to determine the hero's health points and display the result.
-input("Roll the dice for your health points (Press Enter)")
+input("Roll the dice for your health points (Press enter)")
 healthPoints = random.choice(diceOptions)
-print(f"You rolled {healthPoints} health points.")
+print("You rolled " + str(healthPoints) + " health points")
 
-# Question: Roll the dice (1-6) to determine the monster's health points and display the result.
-input("Roll the dice for the monster's health points (Press Enter)")
+input("Roll the dice for the monster's health points (Press enter)")
 mHealthPoints = random.choice(diceOptions)
-print(f"The monster rolled {mHealthPoints} health points.")
+print("You rolled " + str(mHealthPoints) + " health points for the monster")
 
-# Question: Roll the dice (1-6) to determine if the hero finds a healing potion.
-input("Roll the dice to see if you find a healing potion (Press Enter)")
+input("Roll the dice to see if you find a healing potion (Press enter)")
 healingPotion = random.choice([0, 1])
-print(f"Have you found a healing potion? {'Yes' if healingPotion else 'No'}")
+print("Have you found a healing potion?: " + str(bool(healingPotion)))
 
-# Question: Roll the dice (1-6) to select a weapon, add its strength to the hero's combat strength, and display feedback.
-input("Roll the dice to choose your weapon (Press Enter)")
-weaponRoll = random.choice(diceOptions) - 1  # Adjust for 0-based index
-combatStrength += weaponRoll
-selectedWeapon = weapons[weaponRoll]
-print(f"You rolled {weaponRoll + 1} and got the weapon: {selectedWeapon}")
+input("Analyze the roll (Press enter)")
+# Equality operators
+print("--- You are matched in strength: " + str(combatStrength == mCombatStrength))
 
-# Question: Define conditions based on the weapon roll and provide appropriate feedback.
-if weaponRoll <= 1:
-    print("You rolled a weak weapon, friend.")
-elif weaponRoll <= 3:
-    print("Your weapon is meh.")
+# Relational operators
+print("--- You have a strong player: " + str((combatStrength + healthPoints) >= 15))
+
+# and keyword
+print("--- Remember to take a healing potion!: " + str(healingPotion == 1 and healthPoints <= 6))
+
+# not keyword
+print("--- Phew, you have a healing potion: " + str(
+    not (                               # monster will NOT kill hero in one blow
+        healthPoints < mCombatStrength  # monster will kill hero in one blow
+    )
+    and
+    healingPotion == 1                  # hero has a healing potion
+))
+
+# or keyword
+print("--- Things are getting dangerous: " + str(healingPotion == 0 or healthPoints == 1))
+
+# in keyword
+print("--- Is it possible to roll 0 in the dice?: " + str(0 in diceOptions))
+
+# --- Expanded if statement
+if healthPoints >= 5:
+    print("--- Your health is ok")
+elif healingPotion == 1:
+    healingPotion = 0
+    healthPoints = 6
+    print("--- Using your healing potion... Your Health Points is now full at " + str(healthPoints))
 else:
-    print("Nice weapon, friend!")
+    print("--- Your health is low at " + str(healthPoints) + " and you have no healing potions available!")
 
-if selectedWeapon != "Fist":
-    print("Thank goodness you didn't roll the Fist...")
 
-# Question: Simulate a fight between the hero and the monster, displaying the outcomes.
-print("You meet the monster. FIGHT!")
-input("You strike first (Press Enter)")
+# --- Nested if statement
+print("You meet the monster. FIGHT!!")
+input("You strike first (Press enter)")
+
+print("Your sword (" + str(combatStrength) + ") ---> Monster (" + str(mHealthPoints) + ")")
 if combatStrength >= mHealthPoints:
-    print("You've killed the monster!")
+    mHealthPoints = 0
+    print("You've killed the monster")
 else:
     mHealthPoints -= combatStrength
-    print(f"You reduced the monster's health to {mHealthPoints}.")
-    print("The monster strikes back!")
+
+    print("You've reduced the monster's health to: " + str(mHealthPoints))
+
+    print("The monster strikes!!!")
+    print("Monster's Claw (" + str(mCombatStrength) + ") ---> You (" + str(healthPoints) + ")")
     if mCombatStrength >= healthPoints:
-        print("You're dead!")
+        healthPoints = 0
+        print("You're dead")
     else:
         healthPoints -= mCombatStrength
-        print(f"The monster reduced your health to {healthPoints}.")
+        print("The monster has reduced your health to: " + str(healthPoints)) 
